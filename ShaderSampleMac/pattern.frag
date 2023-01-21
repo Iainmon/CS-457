@@ -5,8 +5,8 @@ uniform float   uShininess;		// specular exponent
 uniform float uS0, uT0, uD;		// square pattern
 uniform float u_time;
 
-uniform float uA;
-uniform float uB;
+uniform float uAd;
+uniform float uBd;
 uniform float uTol;
 
 varying  vec2  vST;			// texture coords
@@ -17,20 +17,23 @@ varying  vec3  vE;			// vector from point to eye
 void program(inout vec3 myColor) {
     
     vec2 st = vST * 10.;
-    float diam = 2.;// abs(0.1 * sin(u_time));
-    float r = diam/2.;
+    // float diam = 2.;// abs(0.1 * sin(u_time));
+    // float r = diam/2.;
 
     float s = st.s;
     float t = st.t;
+
+    float a_r = uAd / 2.;
+    float b_r = uBd / 2.;
     
-    int n_s = int(s/diam);
-    int n_t = int(t/diam);
+    int n_s = int(s/uAd);
+    int n_t = int(t/uBd);
 
-    float s_c = (n_s * diam) + r;
-    float t_c = (n_t * diam) + r;
+    float s_c = (n_s * uAd) + a_r;
+    float t_c = (n_t * uBd) + b_r;
 
-    float d = pow((s - s_c) / uA, 2.) + pow((t - t_c) / uB, 2.);
-    float edge =  pow(r, 2.);
+    float d = pow((s - s_c) / a_r, 2.) + pow((t - t_c) / b_r, 2.);
+    float edge = 1.;// pow(r, 2.);
     // float uTol = 0.00001;
     float m = smoothstep(edge - uTol, edge + uTol, d);
     // float m = 0.0;

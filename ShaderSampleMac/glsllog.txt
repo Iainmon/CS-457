@@ -1,4 +1,6 @@
 
-ERROR: 0:1: '' :  version '330' is not supported
-ERROR: 0:1: '' : syntax error: #version
+ERROR: 0:36: Use of undeclared identifier 'r'
+ERROR: 0:38: Use of undeclared identifier 'edge'
+ERROR: 0:38: Use of undeclared identifier 'edge'
+ERROR: 0:43: Use of undeclared identifier 'm'
 

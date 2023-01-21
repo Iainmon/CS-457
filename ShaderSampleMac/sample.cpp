@@ -425,8 +425,8 @@ Display( )
 	Pattern->SetUniformVariable( (char *)"uKs", 0.3f );
 	Pattern->SetUniformVariable( (char *)"uShininess", 8.f );
 
-	Pattern->SetUniformVariable( (char *)"uA", uA );
-	Pattern->SetUniformVariable( (char *)"uB", uB );
+	Pattern->SetUniformVariable( (char *)"uAd", uA );
+	Pattern->SetUniformVariable( (char *)"uBd", uB );
 	Pattern->SetUniformVariable( (char *)"uTol", uTol );
 
 	Pattern->SetUniformVariable( (char *)"uS0", S0);
