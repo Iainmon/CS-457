@@ -6,8 +6,8 @@ LookAt 0 0 8  0 0 0  0 1 0
 Vertex		shader.vert
 Fragment	shader.frag
 Program		Pleats					\
-		uK <0. .3. 1.>				\
-		uP <0. 1. 1.>				\
+		uK <0. .05. 1.>				\
+		uP <0. .5 1.>				\
                 uY0 <-1. 1. 1.>                         \
                 uNoiseAmp <0. 0. 1.>			\
                 uNoiseFreq <1. 1. 1.>			\
