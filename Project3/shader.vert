@@ -41,7 +41,7 @@ main( )
 	vLightIntensity  = abs( dot( normalize(vec3(uLightX,uLightY,uLightZ) - ECposition), tnorm ) );
 
 
-	vN = normalize(gl_NormalMatrix * normal); // normalize( gl_NormalMatrix * gl_Normal ); // normal vector
+	vN = normal;//normalize(gl_NormalMatrix * normal); // normalize( gl_NormalMatrix * gl_Normal ); // normal vector
 	vL = vec3(uLightX,uLightY,uLightZ) - ECposition.xyz;
 	vE = vec3( 0., 0., 0. ) - ECposition.xyz;
 

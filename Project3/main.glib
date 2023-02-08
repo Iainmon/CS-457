@@ -9,8 +9,8 @@ Program		Pleats					\
 		uK <0. .05. 1.>				\
 		uP <0. .5 1.>				\
                 uY0 <-1. 1. 1.>                         \
-                uNoiseAmp <0. 0. 1.>			\
-                uNoiseFreq <1. 1. 1.>			\
+                uNoiseAmp <0. 0. 10.>			\
+                uNoiseFreq <1. 1. 10.>			\
                 uKa <0. 0.1 1.0>                        \
                 uKd <0. 0.6 1.0>                        \
                 uKs <0. 0.3 1.0>                        \
@@ -22,4 +22,4 @@ Program		Pleats					\
                 uSpecularColor {1. 1. 1. 1.}            \
                 uLightPosition {1. 1. 1.}
 
-QuadXY  -0.2  1.  128  128
+QuadXY  -0.2  1.  255  255

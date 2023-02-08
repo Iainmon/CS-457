@@ -1,3 +1,4 @@
 
-0(35) : error C1503: undefined variable "dsdy"
+0(53) : error C7011: implicit cast from "vec3" to "vec2"
+0(57) : error C7011: implicit cast from "vec3" to "vec2"
 
