@@ -1,0 +1,4 @@
+
+0(18) : error C1503: undefined variable "uY0"
+0(32) : error C1503: undefined variable "uY0"
+
