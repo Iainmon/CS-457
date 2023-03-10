@@ -1,4 +1,7 @@
 
-ERROR: 0:44: Invalid call of undeclared identifier 'texture'
-ERROR: 0:45: Use of undeclared identifier 'color'
+ERROR: 0:31: Invalid call of undeclared identifier 'frac'
+ERROR: 0:33: Use of undeclared identifier 'diff'
+ERROR: 0:35: Use of undeclared identifier 'st_d'
+ERROR: 0:38: Use of undeclared identifier 'st_r'
+ERROR: 0:41: Use of undeclared identifier 'color'
 

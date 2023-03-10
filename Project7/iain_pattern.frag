@@ -4,44 +4,48 @@ uniform float uTime;
 uniform sampler2D uTexUnit;
 
 varying  vec2  vST;			// texture coords
-// varying  vec3  vN;			// normal vector
-// varying  vec3  vL;			// vector from point to light
-// varying  vec3  vE;			// vector from point to eye
 
+
+vec2 rotate(vec2 v, float a) {
+	float s = sin(a);
+	float c = cos(a);
+	mat2 m = mat2(c, -s, s, c);
+	return m * v;
+}
+
+	// float dist = length(diff);
+	// float a = atan(diff.y, diff.x);
+	// float r = 0.5;
+	// float t = uTime * 0.1;
+	// float d = 0.5 + 0.5 * sin(t + a * 10.);
+	// float f = smoothstep(r - d, r + d, dist);
+	// vec2 st_r = st_d + rotate(diff, uTime * 0.1);
 
 void
 main( )
 {
-	// vec3 Normal    = normalize(vN);
-	// vec3 Light     = normalize(vL);
-	// vec3 Eye       = normalize(vE);
-
-	// vec3 SpecularColor = vec3( 1., 1., 1. );
-	// vec3 myColor = vec3(1.0, 0.5, 0.0 );
-	// float ds = uD;
-	// float dt = uD;
-	// if(	uS0-ds/2. <= vST.s  &&  vST.s <= uS0+ds/2.  && 
-	// 	uT0-dt/2. <= vST.t  &&  vST.t <= uT0+dt/2.  )
-	// {
-	// 		myColor = vec3( 1., 0., 0. );
-	// }
-
-	// vec3 ambient = uKa * myColor;
-
-	// float d = max( dot(Normal,Light), 0. );       // only do diffuse if the light can see the point
-	// vec3 diffuse = uKd * d * myColor;
-
-	// float s = 0.;
-	// if( dot(Normal,Light) > 0. )	          // only do specular if the light can see the point
-	// {
-	// 	vec3 ref = normalize(  reflect( -Light, Normal )  );
-	// 	s = pow( max( dot(Eye,ref),0. ), uShininess );
-	// }
-	// vec3 specular = uKs * s * SpecularColor.rgb;
-	// gl_FragColor = vec4( ambient + diffuse + specular,  1. );
 
 	vec2 st = vST;
-	vec3 color = texture2D(uTexUnit, st).rgb;
+
+	float tiles = 10.;
+	vec2 diff = (floor(st * tiles) / tiles) + vec2(0.5 / tiles);
+
+	// float diff_length = 
+
+	vec2 st_d = st - diff;
+	vec2 st_r = rotate(st_d, uTime); // scale time inversely by length of diff. 
+	vec2 st_new = st_r + diff;
+
+	vec3 rot_color = texture2D(uTexUnit, st_new).rgb;
+	vec3 color = rot_color;
+	vec3 og_color = texture2D(uTexUnit, st).rgb;
+
+	float bias = length(diff);
+
+	// vec3 color = mix(rot_color, og_color, bias);
+
+
+
 	gl_FragColor = vec4(color, 1.0);
 
 }

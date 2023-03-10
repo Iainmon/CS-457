@@ -64,7 +64,7 @@ const int GLUIFALSE = { false };
 
 // timing
 
-const int MS_PER_CYCLE = 5000;
+const int MS_PER_CYCLE = 60000;
 
 
 // initial window size:
@@ -179,7 +179,7 @@ const GLfloat FOGEND      = { 4. };
 
 
 // non-constant global variables:
-
+float u_zoom = 1.0;
 int		ActiveButton;			// current button that is down
 GLuint	AxesList;				// list to hold the axes
 int		AxesOn;					// != 0 means to draw the axes
@@ -296,8 +296,8 @@ Animate( )
 {
 	int ms = glutGet( GLUT_ELAPSED_TIME );
 	ms %= MS_PER_CYCLE;
-	Time = (float)ms / (float)( MS_PER_CYCLE - 1 );
-
+	// Time = (float)ms / (float)( MS_PER_CYCLE - 1 );
+	Time = (float)ms / 1000.0;
 	glutSetWindow( MainWindow );
 	glutPostRedisplay( );
 }
@@ -436,6 +436,8 @@ Display( )
 	glPopMatrix();
 	Pattern->Use( 0 );
 
+	glPushMatrix();
+	glScalef(u_zoom, u_zoom, u_zoom);
 	IainPattern->Use( );
 	glActiveTexture( GL_TEXTURE6 );		 // use texture unit 6
 	glBindTexture( GL_TEXTURE_2D, WorldTex );
@@ -443,7 +445,7 @@ Display( )
 	IainPattern->SetUniformVariable( "uTexUnit", 6 );
 	glCallList( IainSphere );
 	IainPattern->Use( 0 );			// or Pattern->UnUse( )
-
+	glPopMatrix();
 
 	glutSwapBuffers( );
 	glFlush( );
@@ -831,6 +833,14 @@ Keyboard( unsigned char c, int x, int y )
 		case ESCAPE:
 			DoMainMenu( QUIT );	// will not return here
 			break;				// happy compiler
+		case 'i':
+		case 'I':
+			u_zoom += 0.1;
+			break;
+		case 'k':
+		case 'K':
+			u_zoom -= 0.1;
+			break;
 
 		default:
 			fprintf( stderr, "Don't know what to do with keyboard hit: '%c' (0x%0x)\n", c, c );
