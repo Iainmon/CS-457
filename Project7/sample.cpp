@@ -179,6 +179,7 @@ const GLfloat FOGEND      = { 4. };
 
 
 // non-constant global variables:
+bool toggle_distort = false;
 float u_zoom = 1.0;
 int		ActiveButton;			// current button that is down
 GLuint	AxesList;				// list to hold the axes
@@ -415,33 +416,35 @@ Display( )
 	T0 = 0.5f;
 	D  = 0.1f;
 
-	Pattern->Use( );
-	Pattern->SetUniformVariable( (char *)"uKa", 0.1f );
-	Pattern->SetUniformVariable( (char *)"uKd", 0.6f );
-	Pattern->SetUniformVariable( (char *)"uKs", 0.3f );
-	Pattern->SetUniformVariable( (char *)"uShininess", 8.f );
+	// Pattern->Use( );
+	// Pattern->SetUniformVariable( (char *)"uKa", 0.1f );
+	// Pattern->SetUniformVariable( (char *)"uKd", 0.6f );
+	// Pattern->SetUniformVariable( (char *)"uKs", 0.3f );
+	// Pattern->SetUniformVariable( (char *)"uShininess", 8.f );
 
-	Pattern->SetUniformVariable( (char *)"uS0", S0);
-	Pattern->SetUniformVariable( (char *)"uT0", T0 );
-	Pattern->SetUniformVariable( (char *)"uD", D*(float)(.5+.5*sin(2.*M_PI*Time)) );
-	Pattern->SetUniformVariable( (char *)"uTime",  Time );
+	// Pattern->SetUniformVariable( (char *)"uS0", S0);
+	// Pattern->SetUniformVariable( (char *)"uT0", T0 );
+	// Pattern->SetUniformVariable( (char *)"uD", D*(float)(.5+.5*sin(2.*M_PI*Time)) );
+	// Pattern->SetUniformVariable( (char *)"uTime",  Time );
 
 
-	// draw the current object:
+	// // draw the current object:
 
-	glPushMatrix();
-	glTranslatef( 1., 0., 0. );
-	glScalef(0.5,0.5,0.5);
-	glCallList( SphereList );
-	glPopMatrix();
-	Pattern->Use( 0 );
+	// glPushMatrix();
+	// glTranslatef( 1., 0., 0. );
+	// glScalef(0.5,0.5,0.5);
+	// glCallList( SphereList );
+	// glPopMatrix();
+	// Pattern->Use( 0 );
+
+	float uTime = toggle_distort ? 0.f : Time;
 
 	glPushMatrix();
 	glScalef(u_zoom, u_zoom, u_zoom);
 	IainPattern->Use( );
 	glActiveTexture( GL_TEXTURE6 );		 // use texture unit 6
 	glBindTexture( GL_TEXTURE_2D, WorldTex );
-	IainPattern->SetUniformVariable( "uTime", Time );
+	IainPattern->SetUniformVariable( "uTime", uTime );
 	IainPattern->SetUniformVariable( "uTexUnit", 6 );
 	glCallList( IainSphere );
 	IainPattern->Use( 0 );			// or Pattern->UnUse( )
@@ -840,6 +843,10 @@ Keyboard( unsigned char c, int x, int y )
 		case 'k':
 		case 'K':
 			u_zoom -= 0.1;
+			break;
+		case 't':
+		case 'T':
+			toggle_distort = !toggle_distort;
 			break;
 
 		default:

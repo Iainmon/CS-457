@@ -29,12 +29,13 @@ main( )
 
 	vec2 st = vST;
 
-	float tiles = 10.;
+	float tiles = 30.;
 	vec2 diff = (floor(st * tiles) / tiles) + vec2(0.5 / tiles);
 
 	float diff_len = length(diff);
 
-	float n_time = fract(uTime) * 2. * PI;
+	float time = sin(uTime);// fract(uTime);
+	float n_time = time * 2. * PI;
 
 	vec2 st_d = st - diff;
 
