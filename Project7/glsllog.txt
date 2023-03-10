@@ -1,9 +1,4 @@
 
-ERROR: 0:37: Invalid call of undeclared identifier 'frac'
-ERROR: 0:39: Use of undeclared identifier 'n_time'
-ERROR: 0:42: Use of undeclared identifier 'rot'
-ERROR: 0:43: Use of undeclared identifier 'st_r'
-ERROR: 0:45: Use of undeclared identifier 'st_new'
-ERROR: 0:46: Use of undeclared identifier 'rot_color'
-ERROR: 0:55: Use of undeclared identifier 'color'
+ERROR: 0:37: Use of undeclared identifier 'shift_diff'
+ERROR: 0:41: Use of undeclared identifier 'shift_diff'
 

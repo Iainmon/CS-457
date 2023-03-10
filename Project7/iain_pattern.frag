@@ -30,7 +30,15 @@ main( )
 	vec2 st = vST;
 
 	float tiles = 30.;
+
+	float row = floor(st.y * tiles);
+	float shift_dir = (mod(row, 2.) - .5) * 2.;
+
+	float shift = shift_dir * sin(uTime * 0.1);
+
+	st.x = st.x + shift;
 	vec2 diff = (floor(st * tiles) / tiles) + vec2(0.5 / tiles);
+	// diff.x = diff.x + (shift / tiles);
 
 	float diff_len = length(diff);
 
@@ -38,10 +46,12 @@ main( )
 	float n_time = time * 2. * PI;
 
 	vec2 st_d = st - diff;
+	// st_d.x = st_d.x - shift;
 
 	float rot = (1. - smoothstep(.0,.5,length(st_d * tiles))) * n_time;
 
 	vec2 st_r = rotate(st_d, rot); // scale time inversely by length of diff. 
+	st_r.x = st_r.x - shift;
 	vec2 st_new = st_r + diff;
 
 	vec3 rot_color = texture2D(uTexUnit, st_new).rgb;
