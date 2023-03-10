@@ -1,0 +1,4 @@
+
+ERROR: 0:44: Invalid call of undeclared identifier 'texture'
+ERROR: 0:45: Use of undeclared identifier 'color'
+
