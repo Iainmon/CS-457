@@ -30,10 +30,12 @@ main( )
 	float tiles = 10.;
 	vec2 diff = (floor(st * tiles) / tiles) + vec2(0.5 / tiles);
 
-	// float diff_length = 
+	float diff_len = length(diff);
+
+	float rot = (1. - smoothstep(0.,1.,diff_len)) * uTime;
 
 	vec2 st_d = st - diff;
-	vec2 st_r = rotate(st_d, uTime); // scale time inversely by length of diff. 
+	vec2 st_r = rotate(st_d, rot); // scale time inversely by length of diff. 
 	vec2 st_new = st_r + diff;
 
 	vec3 rot_color = texture2D(uTexUnit, st_new).rgb;
