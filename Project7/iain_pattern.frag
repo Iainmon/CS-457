@@ -36,19 +36,10 @@ main( )
 
 	float n_time = fract(uTime) * 2. * PI;
 
-	// float rot = (1. - smoothstep(.5,1.,diff_len * tiles)) * n_time;
-
-	// if (length > .5) {
-	// 	rot = 0.;
-	// }
-
 	vec2 st_d = st - diff;
 
 	float rot = (1. - smoothstep(.0,.5,length(st_d * tiles))) * n_time;
 
-	// if (length(st_d * tiles) < .5) {
-	// 	rot = 0.;
-	// }
 	vec2 st_r = rotate(st_d, rot); // scale time inversely by length of diff. 
 	vec2 st_new = st_r + diff;
 
