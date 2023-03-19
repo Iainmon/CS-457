@@ -17,7 +17,7 @@
 #include "glslprogramP5.h"
 
 #include "bmptotexture.cpp"
-
+#include "render_texture.cpp"
 
 
 
@@ -200,6 +200,8 @@ GLuint DepthBuffer;
 int RenderWidth = 2048;
 int RenderHeight = 2048;
 
+TextureRender* TexRenderer;
+
 GLuint	WorldTex;				// texture id
 GLuint  RenderTex;
 int		MainWindow;				// window id for main graphics window
@@ -248,6 +250,8 @@ float *	Array3( float, float, float );
 float *	Array4( float, float, float, float );
 float *	BlendArray3( float, float [3], float [3] );
 float *	MulArray3( float, float [3] );
+
+void RenderTextures();
 
 void bind_render_texture();
 void init_render_target();
@@ -335,7 +339,8 @@ Display( )
 
 	glutSetWindow( MainWindow );
 
-	render_test();
+	// render_test();
+	RenderTextures();
 
 
 	// erase the background:
@@ -473,7 +478,7 @@ Display( )
 	glScalef(u_zoom, u_zoom, u_zoom);
 	IainPattern->Use( );
 	glActiveTexture( GL_TEXTURE1 );		 // use texture unit 6
-	glBindTexture( GL_TEXTURE_2D, ColorBuffer );
+	glBindTexture( GL_TEXTURE_2D, TexRenderer->ColorBuffer );
 	// glBindTexture( GL_TEXTURE_2D, WorldTex );
 	IainPattern->SetUniformVariable( "uTime", uTime );
 	IainPattern->SetUniformVariable( "uTexUnit", 1 );
@@ -485,6 +490,24 @@ Display( )
 
 	glutSwapBuffers( );
 	glFlush( );
+}
+
+void RenderTextures() {
+	TexRenderer->Use();
+	
+	// glMatrixMode( GL_PROJECTION );
+	// glLoadIdentity( );
+	// gluPerspective( 90., 1., 0.1, 1000. );
+	// glMatrixMode( GL_MODELVIEW );
+	// glLoadIdentity( );
+	// gluLookAt( 0., 0., 3., 0., 0., 0., 0., 1., 0. );
+	// glRotatef( 0, 0., 1., 0. );
+	// glRotatef( 0, 1., 0., 0. );
+	// glScalef( Scale, Scale, Scale );
+	// glColor3f( 1., 1., 1. );
+	// glutWireTeapot( 1. );
+
+	TexRenderer->UnUse();
 }
 
 
@@ -806,8 +829,10 @@ InitGraphics( )
 	// glGenTextures( 1, &DepthBuffer );
 	// glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
 
-	init_render_target();
+	// init_render_target();
 
+	TexRenderer = new TextureRender(2048,2048);
+	TexRenderer->Init();
 
 }
 
