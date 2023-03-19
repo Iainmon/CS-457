@@ -57,14 +57,16 @@ main( )
 	vec3 rot_color = texture2D(uTexUnit, st_new).rgb;
 	vec3 color = rot_color;
 	// vec3 og_color = texture2D(uTexUnit, st).rgb;
-	vec3 og_color = texture2D(uTexUnit, vST).rgb;
+	vec3 og_color = texture2D(uTexUnit, vST * 10.).rgb;
 
 	float bias = length(diff);
 
 	// vec3 color = mix(rot_color, og_color, bias);
 
 
-	color = vec3(.5,.5,sin(uTime));
+	// color = vec3(.5,.5,sin(uTime)) + og_color;
+	color = og_color;
+
 	gl_FragColor = vec4(color, 1.0);
 
 }

@@ -329,6 +329,7 @@ Animate( )
 
 
 // draw the complete scene:
+bool is_first = true;
 
 void
 Display( )
@@ -344,7 +345,7 @@ Display( )
 	glutSetWindow( MainWindow );
 
 	// render_test();
-	RenderTextures();
+	
 
 
 	// erase the background:
@@ -473,22 +474,22 @@ Display( )
 	glBindTexture( GL_TEXTURE_2D, WorldTex );
 	IainPattern->SetUniformVariable( "uTime", uTime );
 	IainPattern->SetUniformVariable( "uTexUnit", 6 );
-	glTranslatef( -1., 0., 0. );
+	glTranslatef( -3., 0., 0. );
 	glCallList( IainSphere );
 	IainPattern->Use( 0 );			// or Pattern->UnUse( )
 	glPopMatrix();
 
 	glPushMatrix();
 	glScalef(u_zoom, u_zoom, u_zoom);
-	IainPattern->Use( );
+	IdPattern->Use( );
 	glActiveTexture( GL_TEXTURE1 );		 // use texture unit 6
 	glBindTexture( GL_TEXTURE_2D, TexRenderer->ColorBuffer );
 	// glBindTexture( GL_TEXTURE_2D, WorldTex );
-	IainPattern->SetUniformVariable( "uTime", uTime );
-	IainPattern->SetUniformVariable( "uTexUnit", 1 );
+	IdPattern->SetUniformVariable( "uTime", uTime );
+	IdPattern->SetUniformVariable( "uTexUnit", 1 );
 	glTranslatef( 1.1, 0., 0. );
 	glCallList( IainSphere );
-	IainPattern->Use( 0 );			// or Pattern->UnUse( )
+	IdPattern->Use( 0 );			// or Pattern->UnUse( )
 	glPopMatrix();
 
 	glPushMatrix();
@@ -500,7 +501,7 @@ Display( )
 	IdPattern->SetUniformVariable( "uTexUnit", 1 );
 	// glCallList( IainSphere );
 	// glScalef(0.5,0.5,0.5);
-	glTranslatef( 0., 1.1, 0. );
+	glTranslatef( 0., 0., 0. );
 
 		glBegin( GL_QUADS );
 		glTexCoord2f( 0., 0. );
@@ -515,13 +516,31 @@ Display( )
 	IdPattern->Use( 0 );			// or Pattern->UnUse( )
 	glPopMatrix();
 
+	if (is_first) {
+		is_first = false;
+		// glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, RenderWidth, RenderHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, Texture);
+		TexRenderer->Use();
+		glPushMatrix();
+		glScalef(u_zoom, u_zoom, u_zoom);
+		IainPattern->Use( );
+		glActiveTexture( GL_TEXTURE6 );		 // use texture unit 6
+		glBindTexture( GL_TEXTURE_2D, WorldTex );
+		IainPattern->SetUniformVariable( "uTexUnit", 6 );
+		glCallList( IainSphere );
+		IainPattern->Use(0);			// or Pattern->UnUse( )
+		glPopMatrix();
+		TexRenderer->UnUse();
+	} else {	RenderTextures();
+
+
+	}
 
 	glutSwapBuffers( );
 	glFlush( );
+
 }
 
 
-bool is_first = true;
 
 
 void RenderTextures() {
@@ -537,19 +556,25 @@ void RenderTextures() {
 		TexRenderer->Use();
 
 
+glPushMatrix();
+	// glMatrixMode( GL_PROJECTION );
+	// glLoadIdentity( );
+	// gluPerspective( 90., 1., 0.1, 1000. );
+	// glMatrixMode( GL_MODELVIEW );
+	// glLoadIdentity( );
+	// gluLookAt( 0., 0., 3., 0., 0., 0., 0., 1., 0. );
+	// glRotatef( 0, 0., 1., 0. );
+	// glRotatef( 0, 1., 0., 0. );
+	// glScalef( u_zoom, u_zoom, u_zoom );
+	// glColor3f( 1., 1., 1. );
 
-	glMatrixMode( GL_PROJECTION );
+		glMatrixMode( GL_PROJECTION );
 	glLoadIdentity( );
-	gluPerspective( 90., 1., 0.1, 1000. );
+	gluOrtho2D( -1., 1., -1., 1. );
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity( );
-	gluLookAt( 0., 0., 3., 0., 0., 0., 0., 1., 0. );
-	glRotatef( 0, 0., 1., 0. );
-	glRotatef( 0, 1., 0., 0. );
-	glScalef( Scale, Scale, Scale );
-	glColor3f( 1., 1., 1. );
 	glutWireTeapot( 1. );
-
+glPopMatrix();
 		TexRenderer->UnUse();
 
 		return;
@@ -563,7 +588,13 @@ void RenderTextures() {
 	printf("time: %f\n", Time);
 
 	// glEnable( GL_TEXTURE_2D );
+	// glMatrixMode( GL_PROJECTION );
+	// glLoadIdentity( );
+	// gluOrtho2D( -1., 1., -1., 1. );
+	// glMatrixMode( GL_MODELVIEW );
+	// glLoadIdentity( );
 
+glPushMatrix();
 	TexShader->Use();
 	
 	glActiveTexture( GL_TEXTURE1 );
@@ -571,6 +602,8 @@ void RenderTextures() {
 
 	TexShader->SetUniformVariable("uTime", Time);
 	TexShader->SetUniformVariable("uTexUnit",1);
+
+	// glScalef( 10.f, 10.f, 10.f );
 	glBegin( GL_QUADS );
 		glTexCoord2f( 0., 0. );
 		glVertex2f( -1., -1. );
@@ -584,9 +617,10 @@ void RenderTextures() {
 	
 	TexShader->UnUse();
 	// glDisable( GL_TEXTURE_2D );
-
+glPopMatrix();
 	// TexRenderer->Use();
 	TexRenderer->UnUse();
+	// TexRenderer->UnUse();
 
 	// TexRenderer->Use();
 

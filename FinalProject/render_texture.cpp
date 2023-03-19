@@ -43,6 +43,7 @@ class TextureRender {
         // BindTextures();
 
         // if (clear) {
+        // glClearColor( 0.0, 0.0, 0.0, 1.0);
          glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         // } else {
         //     glClearColor( 0.0, 0.0, 0.0, 0.0);
@@ -69,6 +70,7 @@ class TextureRender {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
 
         
 
@@ -101,13 +103,15 @@ glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Colo
                 glReadPixels( 0, 0, RenderWidth, RenderHeight, GL_RGBA, GL_UNSIGNED_BYTE, Image );
 
         // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
-glReadPixels( 0, 0, RenderWidth, RenderHeight, GL_RGBA, GL_UNSIGNED_BYTE, Image );
+// glReadPixels( 0, 0, RenderWidth, RenderHeight, GL_RGBA, GL_UNSIGNED_BYTE, Image );
 // glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
 //                 glPixelStorei( GL_PACK_ALIGNMENT, 1 );
 //     glReadPixels( 0, 0, RenderWidth, RenderHeight, GL_RGB, GL_UNSIGNED_BYTE, Image );
 
 // glPixelStorei( GL_PACK_ALIGNMENT, 1 );
     glViewport( 0, 0, RenderWidth, RenderHeight );
+    // glReadPixels( 0, 0, RenderWidth, RenderHeight, GL_RGBA, GL_UNSIGNED_BYTE, Image );
+
 
 printf("Image: %d %d %d\n", Image[0], Image[1], Image[2]);
         glBindFramebuffer( GL_FRAMEBUFFER, 0 );

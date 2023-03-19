@@ -27,5 +27,5 @@ main( )
 	// 						// to the light position
 	// vE = vec3( 0., 0., 0. ) - ECposition.xyz;		// vector from the point
 	// 						// to the eye position 
-	gl_Position = gl_ModelViewProjectionMatrix * vec4( vert, 1. );
+	gl_Position = gl_ModelViewMatrix * vec4( vert, 1. );
 }
