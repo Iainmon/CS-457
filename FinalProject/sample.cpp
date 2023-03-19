@@ -202,6 +202,8 @@ int RenderHeight = 2048;
 
 TextureRender* TexRenderer;
 
+GLSLProgram *TexShader;
+
 GLuint	WorldTex;				// texture id
 GLuint  RenderTex;
 int		MainWindow;				// window id for main graphics window
@@ -492,9 +494,71 @@ Display( )
 	glFlush( );
 }
 
+
+bool is_first = true;
+
+
 void RenderTextures() {
-	TexRenderer->Use();
+	if (is_first) {
+		is_first = false;
+		// TexRenderer->Use(true);
+		// glClearColor(0.,0.,0.,1.);
+		// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// TexRenderer->Use(false);
+
+		TexRenderer->Use();
+
+		glMatrixMode( GL_PROJECTION );
+		glLoadIdentity( );
+		gluPerspective( 90., 1., 0.1, 1000. );
+		glMatrixMode( GL_MODELVIEW );
+		glLoadIdentity( );
+		gluLookAt( 0., 0., 3., 0., 0., 0., 0., 1., 0. );
+		glRotatef( 0, 0., 1., 0. );
+		glRotatef( 0, 1., 0., 0. );
+		glScalef( Scale, Scale, Scale );
+		glColor3f( 1., 1., 1. );
+		glutWireTeapot( 1. );
+
+		TexRenderer->UnUse();
+
+		return;
+	}
+
+	TexRenderer->Use(false);
 	
+	glMatrixMode( GL_PROJECTION );
+	glLoadIdentity( );
+
+	gluOrtho2D( -1., 1., -1., 1. );
+	glMatrixMode( GL_MODELVIEW );
+	glLoadIdentity( );
+
+	// glEnable( GL_TEXTURE_2D );
+
+	TexShader->Use();
+	glActiveTexture( GL_TEXTURE2 );
+	glBindTexture( GL_TEXTURE_2D, TexRenderer->ColorBuffer );
+	TexShader->SetUniformVariable("uTime", Time);
+	TexShader->SetUniformVariable("uTexUnit",2);
+	glBegin( GL_QUADS );
+		glTexCoord2f( 0., 0. );
+		glVertex2f( -1., -1. );
+		glTexCoord2f( 1., 0. );
+		glVertex2f( 1., -1. );
+		glTexCoord2f( 1., 1. );
+		glVertex2f( 1., 1. );
+		glTexCoord2f( 0., 1. );
+		glVertex2f( -1., 1. );
+	glEnd( );
+	TexShader->UnUse();
+	// glDisable( GL_TEXTURE_2D );
+
+
+	TexRenderer->UnUse();
+
+	// TexRenderer->Use();
+
 	// glMatrixMode( GL_PROJECTION );
 	// glLoadIdentity( );
 	// gluPerspective( 90., 1., 0.1, 1000. );
@@ -507,7 +571,7 @@ void RenderTextures() {
 	// glColor3f( 1., 1., 1. );
 	// glutWireTeapot( 1. );
 
-	TexRenderer->UnUse();
+	// TexRenderer->UnUse();
 }
 
 
@@ -788,6 +852,18 @@ InitGraphics( )
 		fprintf( stderr, "Shader created.\n" );
 	}
 	IainPattern->SetVerbose( false );
+
+	TexShader = new GLSLProgram( );
+	valid = TexShader->Create( (char *)"tex_pattern.vert",  (char *)"tex_pattern.frag" );
+	if( ! valid )
+	{
+		fprintf( stderr, "Shader cannot be created!\n" );
+	}
+	else
+	{
+		fprintf( stderr, "Shader created.\n" );
+	}
+	TexShader->SetVerbose( false );
 
 
 	int width, height;

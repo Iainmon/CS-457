@@ -1,4 +1,3 @@
 
-ERROR: 0:37: Use of undeclared identifier 'shift_diff'
-ERROR: 0:41: Use of undeclared identifier 'shift_diff'
+ERROR: 0:67: '+' does not operate on 'vec3' and 'vec2'
 
