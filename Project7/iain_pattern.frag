@@ -29,12 +29,12 @@ main( )
 
 	vec2 st = vST;
 
-	float tiles = 30.;
+	float tiles = 10.;
 
 	float row = floor(st.y * tiles);
 	float shift_dir = (mod(row, 2.) - .5) * 2.;
 
-	float shift = shift_dir * sin(uTime * 0.1);
+	float shift = shift_dir * uTime * 0.01;
 
 	st.x = st.x + shift;
 	vec2 diff = (floor(st * tiles) / tiles) + vec2(0.5 / tiles);
