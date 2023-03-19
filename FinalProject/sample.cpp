@@ -203,6 +203,8 @@ int RenderHeight = 2048;
 TextureRender* TexRenderer;
 
 GLSLProgram *TexShader;
+GLSLProgram *IdPattern;
+
 
 GLuint	WorldTex;				// texture id
 GLuint  RenderTex;
@@ -484,9 +486,31 @@ Display( )
 	// glBindTexture( GL_TEXTURE_2D, WorldTex );
 	IainPattern->SetUniformVariable( "uTime", uTime );
 	IainPattern->SetUniformVariable( "uTexUnit", 1 );
-	glTranslatef( 1., 0., 0. );
+	glTranslatef( 1.1, 0., 0. );
 	glCallList( IainSphere );
 	IainPattern->Use( 0 );			// or Pattern->UnUse( )
+	glPopMatrix();
+
+	glPushMatrix();
+	glScalef(u_zoom, u_zoom, u_zoom);
+	IdPattern->Use( );
+	glActiveTexture( GL_TEXTURE1 );		 // use texture unit 6
+	glBindTexture( GL_TEXTURE_2D, TexRenderer->ColorBuffer );
+	// glBindTexture( GL_TEXTURE_2D, WorldTex );
+	IdPattern->SetUniformVariable( "uTexUnit", 1 );
+	glTranslatef( 0., 1.1, 0. );
+	// glCallList( IainSphere );
+		glBegin( GL_QUADS );
+		glTexCoord2f( 0., 0. );
+		glVertex2f( -1., -1. );
+		glTexCoord2f( 1., 0. );
+		glVertex2f( 1., -1. );
+		glTexCoord2f( 1., 1. );
+		glVertex2f( 1., 1. );
+		glTexCoord2f( 0., 1. );
+		glVertex2f( -1., 1. );
+	glEnd( );
+	IdPattern->Use( 0 );			// or Pattern->UnUse( )
 	glPopMatrix();
 
 
@@ -501,31 +525,53 @@ bool is_first = true;
 void RenderTextures() {
 	if (is_first) {
 		is_first = false;
+		printf("hello\n");
 		// TexRenderer->Use(true);
 		// glClearColor(0.,0.,0.,1.);
 		// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// TexRenderer->Use(false);
 
+
 		TexRenderer->Use();
 
 		glMatrixMode( GL_PROJECTION );
 		glLoadIdentity( );
-		gluPerspective( 90., 1., 0.1, 1000. );
+
+		gluOrtho2D( -1., 1., -1., 1. );
 		glMatrixMode( GL_MODELVIEW );
 		glLoadIdentity( );
+
 		gluLookAt( 0., 0., 3., 0., 0., 0., 0., 1., 0. );
 		glRotatef( 0, 0., 1., 0. );
 		glRotatef( 0, 1., 0., 0. );
 		glScalef( Scale, Scale, Scale );
 		glColor3f( 1., 1., 1. );
 		glutWireTeapot( 1. );
+		// glMatrixMode( GL_PROJECTION );
+		// glLoadIdentity( );
+
+		// gluOrtho2D( -1., 1., -1., 1. );
+		// glMatrixMode( GL_MODELVIEW );
+		// glLoadIdentity( );
+
+		// 	glBegin( GL_QUADS );
+		// glTexCoord2f( 0., 0. );
+		// glVertex2f( -1., -1. );
+		// glTexCoord2f( 1., 0. );
+		// glVertex2f( 1., -1. );
+		// glTexCoord2f( 1., 1. );
+		// glVertex2f( 1., 1. );
+		// glTexCoord2f( 0., 1. );
+		// glVertex2f( -1., 1. );
+		// glEnd( );
 
 		TexRenderer->UnUse();
 
 		return;
 	}
+	return;
 
-	TexRenderer->Use(false);
+	TexRenderer->Use();
 	
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity( );
@@ -534,13 +580,18 @@ void RenderTextures() {
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity( );
 
+
+	printf("time: %f\n", Time);
+
 	// glEnable( GL_TEXTURE_2D );
 
 	TexShader->Use();
-	glActiveTexture( GL_TEXTURE2 );
+	
+	glActiveTexture( GL_TEXTURE1 );
 	glBindTexture( GL_TEXTURE_2D, TexRenderer->ColorBuffer );
+
 	TexShader->SetUniformVariable("uTime", Time);
-	TexShader->SetUniformVariable("uTexUnit",2);
+	TexShader->SetUniformVariable("uTexUnit",1);
 	glBegin( GL_QUADS );
 		glTexCoord2f( 0., 0. );
 		glVertex2f( -1., -1. );
@@ -864,6 +915,19 @@ InitGraphics( )
 		fprintf( stderr, "Shader created.\n" );
 	}
 	TexShader->SetVerbose( false );
+
+
+	IdPattern = new GLSLProgram( );
+	valid = IdPattern->Create( (char *)"id_pattern.vert",  (char *)"id_pattern.frag" );
+	if( ! valid )
+	{
+		fprintf( stderr, "Shader cannot be created!\n" );
+	}
+	else
+	{
+		fprintf( stderr, "Shader created.\n" );
+	}
+	IdPattern->SetVerbose( false );
 
 
 	int width, height;

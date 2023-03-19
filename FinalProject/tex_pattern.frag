@@ -64,7 +64,7 @@ main( )
 	// vec3 color = mix(rot_color, og_color, bias);
 
 
-	color = vec3(.5,.5,0.) + og_color;
+	color = vec3(.5,.5,sin(uTime)) + og_color;
 	gl_FragColor = vec4(color, 1.0);
 
 }

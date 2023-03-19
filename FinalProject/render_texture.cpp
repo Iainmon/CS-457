@@ -13,6 +13,7 @@ class TextureRender {
     GLuint FrameBuffer;
     GLuint ColorBuffer;
     GLuint DepthBuffer;
+    unsigned char *Image;
 
     int RenderWidth;
     int RenderHeight;
@@ -20,68 +21,109 @@ class TextureRender {
     TextureRender(int width, int height) {
         RenderWidth = width;
         RenderHeight = height;
+        Image = new unsigned char [ 3*width*height ];
     }
 
     void Init() {
         glGenFramebuffers( 1, &FrameBuffer );
         glGenTextures( 1, &ColorBuffer );
-        glGenTextures( 1, &DepthBuffer );
+        // glGenRenderBuffers( 1, &DepthBuffer );
 
-        glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
+        // glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
 
-        InitTextures();
+        // InitTextures();
 
-        glBindFramebuffer( GL_FRAMEBUFFER, 0 );
+        // glBindFramebuffer( GL_FRAMEBUFFER, 0 );
     }
 
     void Use(bool clear = true) {
-        glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
-        BindTextures();
-        if (clear) {
-            glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        } else {
-            // glClear( GL_DEPTH_BUFFER_BIT );
-        }
-        glViewport( 0, 0, RenderWidth, RenderHeight );
+                //glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
-        glEnable( GL_DEPTH_TEST );
-        glShadeModel( GL_SMOOTH );
+        // glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
+        // BindTextures();
+
+        // if (clear) {
+        //     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        // } else {
+        //     glClearColor( 0.0, 0.0, 0.0, 0.0);
+        //     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        // }
+        // glViewport( 0, 0, RenderWidth, RenderHeight );
+
+        // glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
+                glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
+                glPixelStorei( GL_PACK_ALIGNMENT, 1 );
+glReadPixels( 0, 0, RenderWidth, RenderHeight, GL_RGB, GL_UNSIGNED_BYTE, Image );
+    glViewport( 0, 0, RenderWidth, RenderHeight );
+
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+        glBindTexture( GL_TEXTURE_2D, ColorBuffer );
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, RenderWidth, RenderHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, Image);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glPixelStorei( GL_PACK_ALIGNMENT, 1 );
+
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
+        
+        // glBindTexture( GL_TEXTURE_2D, DepthBuffer );
+        // glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, RenderWidth, RenderHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, DepthBuffer, 0);
+        
+        
+
+        // glEnable( GL_DEPTH_TEST );
+        // glShadeModel( GL_SMOOTH );
+
     }
 
     void UnUse() {
+glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
+glPixelStorei( GL_PACK_ALIGNMENT, 1 );
+glReadPixels( 0, 0, RenderWidth, RenderHeight, GL_RGB, GL_UNSIGNED_BYTE, Image );
+printf("Image: %d %d %d\n", Image[0], Image[1], Image[2]);
         glBindFramebuffer( GL_FRAMEBUFFER, 0 );
     }
 
 
     
     void BindTextures() {
+        // glActiveTexture( GL_TEXTURE0 );
         glBindTexture( GL_TEXTURE_2D, ColorBuffer );
 	    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
-	
-	    glBindTexture( GL_TEXTURE_2D, DepthBuffer );
-	    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, DepthBuffer, 0);
+        
+        // glActiveTexture( GL_TEXTURE5 );
+	    // glBindTexture( GL_TEXTURE_2D, DepthBuffer );
+	    // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, DepthBuffer, 0);
     }
 
     void InitTextures() {
+        glPixelStorei( GL_PACK_ALIGNMENT, 1 );
         
         glBindTexture( GL_TEXTURE_2D, ColorBuffer );
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, RenderWidth, RenderHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, RenderWidth, RenderHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
 
-        glBindTexture( GL_TEXTURE_2D, DepthBuffer );
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, RenderWidth, RenderHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, DepthBuffer, 0);
+        // glBindTexture( GL_TEXTURE_2D, DepthBuffer );
+        // glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, RenderWidth, RenderHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, DepthBuffer, 0);
 
         GLenum status = glCheckFramebufferStatus( GL_FRAMEBUFFER );
         if( status != GL_FRAMEBUFFER_COMPLETE )
             fprintf( stderr, "FrameBuffer is not complete.\n" );
+
         
     }
 };
