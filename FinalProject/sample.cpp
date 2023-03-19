@@ -498,8 +498,10 @@ Display( )
 	glBindTexture( GL_TEXTURE_2D, TexRenderer->ColorBuffer );
 	// glBindTexture( GL_TEXTURE_2D, WorldTex );
 	IdPattern->SetUniformVariable( "uTexUnit", 1 );
-	glTranslatef( 0., 1.1, 0. );
 	// glCallList( IainSphere );
+	// glScalef(0.5,0.5,0.5);
+	glTranslatef( 0., 1.1, 0. );
+
 		glBegin( GL_QUADS );
 		glTexCoord2f( 0., 0. );
 		glVertex2f( -1., -1. );
@@ -527,58 +529,35 @@ void RenderTextures() {
 		is_first = false;
 		printf("hello\n");
 		// TexRenderer->Use(true);
-		// glClearColor(0.,0.,0.,1.);
-		// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//glClearColor(0.,0.,0.,1.);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// TexRenderer->Use(false);
 
 
 		TexRenderer->Use();
 
-		glMatrixMode( GL_PROJECTION );
-		glLoadIdentity( );
 
-		gluOrtho2D( -1., 1., -1., 1. );
-		glMatrixMode( GL_MODELVIEW );
-		glLoadIdentity( );
 
-		gluLookAt( 0., 0., 3., 0., 0., 0., 0., 1., 0. );
-		glRotatef( 0, 0., 1., 0. );
-		glRotatef( 0, 1., 0., 0. );
-		glScalef( Scale, Scale, Scale );
-		glColor3f( 1., 1., 1. );
-		glutWireTeapot( 1. );
-		// glMatrixMode( GL_PROJECTION );
-		// glLoadIdentity( );
-
-		// gluOrtho2D( -1., 1., -1., 1. );
-		// glMatrixMode( GL_MODELVIEW );
-		// glLoadIdentity( );
-
-		// 	glBegin( GL_QUADS );
-		// glTexCoord2f( 0., 0. );
-		// glVertex2f( -1., -1. );
-		// glTexCoord2f( 1., 0. );
-		// glVertex2f( 1., -1. );
-		// glTexCoord2f( 1., 1. );
-		// glVertex2f( 1., 1. );
-		// glTexCoord2f( 0., 1. );
-		// glVertex2f( -1., 1. );
-		// glEnd( );
+	glMatrixMode( GL_PROJECTION );
+	glLoadIdentity( );
+	gluPerspective( 90., 1., 0.1, 1000. );
+	glMatrixMode( GL_MODELVIEW );
+	glLoadIdentity( );
+	gluLookAt( 0., 0., 3., 0., 0., 0., 0., 1., 0. );
+	glRotatef( 0, 0., 1., 0. );
+	glRotatef( 0, 1., 0., 0. );
+	glScalef( Scale, Scale, Scale );
+	glColor3f( 1., 1., 1. );
+	glutWireTeapot( 1. );
 
 		TexRenderer->UnUse();
 
 		return;
 	}
-	return;
+	// return;
 
 	TexRenderer->Use();
 	
-	glMatrixMode( GL_PROJECTION );
-	glLoadIdentity( );
-
-	gluOrtho2D( -1., 1., -1., 1. );
-	glMatrixMode( GL_MODELVIEW );
-	glLoadIdentity( );
 
 
 	printf("time: %f\n", Time);
@@ -602,10 +581,11 @@ void RenderTextures() {
 		glTexCoord2f( 0., 1. );
 		glVertex2f( -1., 1. );
 	glEnd( );
+	
 	TexShader->UnUse();
 	// glDisable( GL_TEXTURE_2D );
 
-
+	// TexRenderer->Use();
 	TexRenderer->UnUse();
 
 	// TexRenderer->Use();

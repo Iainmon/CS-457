@@ -21,7 +21,7 @@ class TextureRender {
     TextureRender(int width, int height) {
         RenderWidth = width;
         RenderHeight = height;
-        Image = new unsigned char [ 3*width*height ];
+        Image = new unsigned char [ 4*width*height ];
     }
 
     void Init() {
@@ -39,11 +39,11 @@ class TextureRender {
     void Use(bool clear = true) {
                 //glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
-        // glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
+        glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
         // BindTextures();
 
         // if (clear) {
-        //     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         // } else {
         //     glClearColor( 0.0, 0.0, 0.0, 0.0);
         //     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -51,19 +51,30 @@ class TextureRender {
         // glViewport( 0, 0, RenderWidth, RenderHeight );
 
         // glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
+             //    glBindTexture( GL_TEXTURE_2D, ColorBuffer );
+
+        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, RenderWidth, RenderHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, Image);
+        //         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+          //              glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
+
 
         glBindTexture( GL_TEXTURE_2D, ColorBuffer );
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, RenderWidth, RenderHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, Image);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, RenderWidth, RenderHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, Image);
         
 
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        // glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-        glBindTexture( GL_TEXTURE_2D, ColorBuffer );
+        // glBindTexture( GL_TEXTURE_2D, ColorBuffer );
 
         // glPixelStorei( GL_PACK_ALIGNMENT, 1 );
 
@@ -74,7 +85,7 @@ class TextureRender {
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, DepthBuffer, 0);
+       //  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, DepthBuffer, 0);
         
         
 
@@ -84,15 +95,18 @@ class TextureRender {
     }
 
     void UnUse() {
-                glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
 
+glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
+                glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
+                glReadPixels( 0, 0, RenderWidth, RenderHeight, GL_RGBA, GL_UNSIGNED_BYTE, Image );
+
+        // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
+glReadPixels( 0, 0, RenderWidth, RenderHeight, GL_RGBA, GL_UNSIGNED_BYTE, Image );
 // glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
 //                 glPixelStorei( GL_PACK_ALIGNMENT, 1 );
 //     glReadPixels( 0, 0, RenderWidth, RenderHeight, GL_RGB, GL_UNSIGNED_BYTE, Image );
 
 // glPixelStorei( GL_PACK_ALIGNMENT, 1 );
-// glReadPixels( 0, 0, RenderWidth, RenderHeight, GL_RGB, GL_UNSIGNED_BYTE, Image );
     glViewport( 0, 0, RenderWidth, RenderHeight );
 
 printf("Image: %d %d %d\n", Image[0], Image[1], Image[2]);
@@ -103,8 +117,8 @@ printf("Image: %d %d %d\n", Image[0], Image[1], Image[2]);
     
     void BindTextures() {
         // glActiveTexture( GL_TEXTURE0 );
-        glBindTexture( GL_TEXTURE_2D, ColorBuffer );
-	    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
+        // glBindTexture( GL_TEXTURE_2D, ColorBuffer );
+	    // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
         
         // glActiveTexture( GL_TEXTURE5 );
 	    // glBindTexture( GL_TEXTURE_2D, DepthBuffer );
@@ -112,15 +126,15 @@ printf("Image: %d %d %d\n", Image[0], Image[1], Image[2]);
     }
 
     void InitTextures() {
-        glPixelStorei( GL_PACK_ALIGNMENT, 1 );
+        // glPixelStorei( GL_PACK_ALIGNMENT, 1 );
         
-        glBindTexture( GL_TEXTURE_2D, ColorBuffer );
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, RenderWidth, RenderHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
+        // glBindTexture( GL_TEXTURE_2D, ColorBuffer );
+        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, RenderWidth, RenderHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
 
         // glBindTexture( GL_TEXTURE_2D, DepthBuffer );
         // glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, RenderWidth, RenderHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
