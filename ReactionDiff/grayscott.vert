@@ -39,10 +39,10 @@ void main(void) {
 
     float zoom = 1.;///parabola(a_texcoord - 0.5);
 
-    v_texcoord = a_texcoord * .5; // (a_texcoord)/ parabola(a_texcoord);
+    v_texcoord = a_texcoord * .6; // (a_texcoord)/ parabola(a_texcoord);
     // v_texcoord *= parabola(v_texcoord);
     vec4 position = a_position;
-    position += vec4(0.0, -5.0, 0.0, 0.0);
+    position += vec4(0.0, -1.5, 0.0, 0.0);
     v_position = u_modelViewProjectionMatrix * position * zoom;
     
     
@@ -70,7 +70,7 @@ float get_diff_value() {
 }
 
 vec3 change(in vec3 pos) {
-    float change_length = .8;
+    float change_length = .3;
     change_length *= get_diff_value();
 
     vec3 change_dir = normalize(v_normal);

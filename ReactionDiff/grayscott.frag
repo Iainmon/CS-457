@@ -30,7 +30,8 @@ varying vec3 v_eye;
 
 
 
-const vec3 color = vec3(1.0, 0.0, 0.0);
+const vec3 coral_color = vec3(0.985,0.882,0.601);
+const vec3 coral_orange = vec3(0.985,0.811,0.288);
 const vec3 specular_color = vec3(1.0, 1.0, 1.0);
 
 const float shininess = 20.0;
@@ -38,10 +39,16 @@ const float shininess = 20.0;
 
 #define ITERATIONS 9
 
-float diffU = 0.25;
+// float diffU = 0.25;
+// float diffV = 0.05;
+// float f = 0.1;
+// float k = 0.063;
+
+
+float diffU = 0.1;
 float diffV = 0.05;
-float f = 0.1;
-float k = 0.063;
+float f = 0.04;
+float k = 0.06;
 
 float random (in float x) {
     return fract(sin(x)*43758.5453123);
@@ -138,8 +145,27 @@ void main() {
     // Main Buffer
     vec3 color = vec3(0.0);
     color = texture2D(u_buffer1, st).rgb;
-    color.r = 1.;
+    float d1 = distance(color, vec3(1.,1.,1.));
+    float d2 = distance(color, vec3(0.,0.,0.));
 
+    float d = smoothstep(-2., 0.3, color.g + color.b);
+
+
+    // color = mix(coral_orange,coral_color, d);
+
+
+    vec3 coral_col_1 = coral_orange;
+
+    float dot_density = 800.;
+    vec2 dot_st = (st + random(floor(st * dot_density))) * dot_density;
+    vec2 dot_loc = floor(dot_st);
+    vec2 dot_off = vec2(random(dot_loc),random(-dot_loc));
+    float dot_dist = length((dot_loc + vec2(.5)) - dot_st);
+    float dots = 1. - smoothstep(0.1,0.13,dot_dist);
+    
+    vec3 coral_col_2 = mix(coral_color,vec3(1.),dots * .5);
+
+    color = mix(coral_col_1,coral_col_2, d);
 
     float diffuse = max(dot(light, normal), 0.0);
     float specular = 0.0;
