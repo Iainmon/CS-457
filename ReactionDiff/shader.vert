@@ -42,7 +42,7 @@ void main(void) {
     
 
 
-    gl_Position = u_modelViewProjectionMatrix * a_position; // <-- working
+    // gl_Position = u_modelViewProjectionMatrix * a_position; // <-- working
 
     vec4 pos = vec4(change(a_position.xyz),1.0);
     gl_Position = u_modelViewProjectionMatrix * pos;

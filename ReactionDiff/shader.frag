@@ -22,7 +22,6 @@ varying vec3 v_normal;
 varying vec3 v_light;
 varying vec3 v_eye;
 
-#include "./diffusion.glsl"
 
 
 const vec3 color = vec3(1.0, 0.0, 0.0);
@@ -51,7 +50,7 @@ void main() {
 
     color *= diffuse * color + specular * specular_color;
 
-
+    // color = vec3(1.);
 
     // color *= texture2D(u_texture_0, v_texcoord).rgb;
 

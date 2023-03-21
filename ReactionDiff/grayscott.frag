@@ -23,6 +23,19 @@ uniform float       u_time;
 
 varying vec2        v_texcoord;
 
+// Lighting
+varying vec3 v_normal;
+varying vec3 v_light;
+varying vec3 v_eye;
+
+
+
+const vec3 color = vec3(1.0, 0.0, 0.0);
+const vec3 specular_color = vec3(1.0, 1.0, 1.0);
+
+const float shininess = 20.0;
+
+
 #define ITERATIONS 9
 
 float diffU = 0.25;
@@ -113,10 +126,30 @@ void main() {
     //
     gl_FragColor = texture2D(u_buffer0, st);
 #else
+
+
+    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+
+    vec3 normal = normalize(v_normal);
+    vec3 light = normalize(v_light);
+    vec3 eye = normalize(v_eye);
+
+
     // Main Buffer
     vec3 color = vec3(0.0);
     color = texture2D(u_buffer1, st).rgb;
-    // color.r = 1.;
+    color.r = 1.;
+
+
+    float diffuse = max(dot(light, normal), 0.0);
+    float specular = 0.0;
+    if (diffuse > 0.0) {
+        vec3 reflect = normalize(reflect(-light, normal));
+        specular = pow(max(dot(eye, reflect), 0.0), shininess);
+    }
+
+    color *= diffuse * color + specular * specular_color;
+
     
     gl_FragColor = vec4(color, 1.0);
 #endif

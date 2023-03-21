@@ -2,11 +2,11 @@
 uniform sampler2D   u_buffer0;
 uniform sampler2D   u_buffer1;
 
+
 // uniform vec2        u_resolution;
-// uniform vec2        u_mouse;
+uniform vec2        u_mouse;
 // uniform float       u_time;
 
-// varying vec2        v_texcoord;
 
 #define ITERATIONS 9
 
@@ -88,7 +88,7 @@ vec4 gs() {
     u += du * 0.6;
     v += dv * 0.6;
 
-    gl_FragColor = vec4(clamp( u, 0.0, 1.0 ), 1.0 - u/v ,clamp( v, 0.0, 1.0 ), 1.0);
+    return vec4(clamp( u, 0.0, 1.0 ), 1.0 - u/v ,clamp( v, 0.0, 1.0 ), 1.0);
 
 #elif defined( BUFFER_1 )
     // PONG BUFFER
