@@ -1,6 +1,6 @@
 #version 120
 
-// uniform float uTime;
+uniform float uTime;
 uniform sampler2D uTexUnit;
 
 varying  vec2  vST;			// texture coords

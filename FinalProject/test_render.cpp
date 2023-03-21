@@ -227,10 +227,18 @@ namespace render
         render_draw();
     }
 
+    void shade() {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glViewport(0,0, fbo_width, fbo_height);
+
+        glClearColor(1.,1.,1.,0.);
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        main_draw();
+    }
+
     void final()
     {
-        
-
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
         glViewport(0,0, width, height);

@@ -27,7 +27,27 @@ class TextureRender {
     void Init() {
         glGenFramebuffers( 1, &FrameBuffer );
         glGenTextures( 1, &ColorBuffer );
-        // glGenRenderBuffers( 1, &DepthBuffer );
+        glGenRenderbuffers( 1, &DepthBuffer );
+
+        glBindFramebuffer(GL_FRAMEBUFFER, FrameBuffer);
+
+        glBindTexture(GL_TEXTURE_2D, ColorBuffer);
+        glTexImage2D(   GL_TEXTURE_2D, 
+                0, 
+                GL_RGBA, 
+                RenderWidth, RenderHeight,
+                0, 
+                GL_RGBA, 
+                GL_UNSIGNED_BYTE, 
+                NULL);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
+
+        glBindRenderbuffer(GL_RENDERBUFFER, DepthBuffer);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, RenderWidth, RenderHeight);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, DepthBuffer);
 
         // glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
 
@@ -37,14 +57,26 @@ class TextureRender {
     }
 
     void Use(bool clear = true) {
+
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glEnable(GL_TEXTURE_2D);
+        glBindFramebuffer(GL_FRAMEBUFFER, FrameBuffer);
+
+        glViewport(0,0,RenderWidth, RenderHeight);
+
+        glClearColor(1,1,1,0);
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        return;
+        
                 //glBindFramebuffer( GL_FRAMEBUFFER, 0 );
 
-        glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
+        // glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
         // BindTextures();
 
         // if (clear) {
         // glClearColor( 0.0, 0.0, 0.0, 1.0);
-         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+         // glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         // } else {
         //     glClearColor( 0.0, 0.0, 0.0, 0.0);
         //     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -70,7 +102,7 @@ class TextureRender {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
 
         
 
@@ -97,7 +129,9 @@ glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Colo
     }
 
     void UnUse() {
+glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+return;
 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorBuffer, 0);
                 glBindFramebuffer( GL_FRAMEBUFFER, FrameBuffer );
                 glReadPixels( 0, 0, RenderWidth, RenderHeight, GL_RGBA, GL_UNSIGNED_BYTE, Image );

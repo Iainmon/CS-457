@@ -19,6 +19,8 @@
 #include "bmptotexture.cpp"
 #include "render_texture.cpp"
 
+float const light_dir[]={1,1,1,0};
+float const light_color[]={1,0.95,0.9,1};
 
 
 //	This is a sample OpenGL / GLUT program
@@ -300,6 +302,7 @@ main( int argc, char *argv[ ] )
 	// (this will never return)
 
 	glutSetWindow( MainWindow );
+	TexRenderer->Init();
 	glutMainLoop( );
 
 
@@ -330,7 +333,7 @@ Animate( )
 
 // draw the complete scene:
 bool is_first = true;
-
+bool is_first_run = true;
 void
 Display( )
 {
@@ -343,6 +346,55 @@ Display( )
 	// set which window we want to do the graphics into:
 
 	glutSetWindow( MainWindow );
+
+	TexRenderer->Use();
+
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(45, 1, 1, 10);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHTING);
+
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
+	glLightfv(GL_LIGHT0, GL_POSITION, light_dir);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_color);
+
+	glTranslatef(0,0,-3);
+
+
+	glEnable(GL_TEXTURE_2D);
+	IdPattern->Use();
+	glActiveTexture( GL_TEXTURE5 );		 // use texture unit 6
+	if (is_first_run) { glBindTexture( GL_TEXTURE_2D, WorldTex ); is_first_run = true; }
+	else { glBindTexture( GL_TEXTURE_2D, TexRenderer->ColorBuffer ); }
+	IdPattern->SetUniformVariable( "uTexUnit", 5 );
+	// IdPattern->SetUniformVariable( "uTime", Time );
+	// 	glScalef(u_zoom, u_zoom, u_zoom);
+
+	// glutSolidTeapot(0.75);
+	glBegin( GL_QUADS );
+		glTexCoord2f( 0., 0. );
+		glVertex2f( -1., -1. );
+		glTexCoord2f( 1., 0. );
+		glVertex2f( 1., -1. );
+		glTexCoord2f( 1., 1. );
+		glVertex2f( 1., 1. );
+		glTexCoord2f( 0., 1. );
+		glVertex2f( -1., 1. );
+	glEnd( );
+	IdPattern->UnUse();
+	// IdPattern->UnUse();
+
+		// glDisable(GL_TEXTURE_2D);
+
+	TexRenderer->UnUse();
 
 	// render_test();
 	
@@ -498,12 +550,13 @@ Display( )
 	glActiveTexture( GL_TEXTURE1 );		 // use texture unit 6
 	glBindTexture( GL_TEXTURE_2D, TexRenderer->ColorBuffer );
 	// glBindTexture( GL_TEXTURE_2D, WorldTex );
+	IdPattern->SetUniformVariable( "uTime", uTime );
 	IdPattern->SetUniformVariable( "uTexUnit", 1 );
 	// glCallList( IainSphere );
 	// glScalef(0.5,0.5,0.5);
-	glTranslatef( 0., 0., 0. );
+	glTranslatef( 0., 1., 0. );
 
-		glBegin( GL_QUADS );
+	glBegin( GL_QUADS );
 		glTexCoord2f( 0., 0. );
 		glVertex2f( -1., -1. );
 		glTexCoord2f( 1., 0. );
@@ -516,24 +569,44 @@ Display( )
 	IdPattern->Use( 0 );			// or Pattern->UnUse( )
 	glPopMatrix();
 
-	if (is_first) {
-		is_first = false;
-		// glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, RenderWidth, RenderHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, Texture);
-		TexRenderer->Use();
-		glPushMatrix();
-		glScalef(u_zoom, u_zoom, u_zoom);
-		IainPattern->Use( );
-		glActiveTexture( GL_TEXTURE6 );		 // use texture unit 6
-		glBindTexture( GL_TEXTURE_2D, WorldTex );
-		IainPattern->SetUniformVariable( "uTexUnit", 6 );
-		glCallList( IainSphere );
-		IainPattern->Use(0);			// or Pattern->UnUse( )
-		glPopMatrix();
-		TexRenderer->UnUse();
-	} else {	RenderTextures();
+	// if (is_first) {
+	// 	is_first = false;
+	// 	// glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, RenderWidth, RenderHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, Texture);
+	// 	TexRenderer->Use();
+	// 	glPushMatrix();
+	// 	glScalef(u_zoom, u_zoom, u_zoom);
+	// 	IainPattern->Use( );
+	// 	glActiveTexture( GL_TEXTURE6 );		 // use texture unit 6
+	// 	glBindTexture( GL_TEXTURE_2D, WorldTex );
+	// 	IainPattern->SetUniformVariable( "uTexUnit", 6 );
+	// 	glCallList( IainSphere );
+	// 	IainPattern->Use(0);			// or Pattern->UnUse( )
+	// 	glPopMatrix();
+	// 	TexRenderer->UnUse();
+	// } else {	RenderTextures();
 
 
-	}
+	// }
+
+	glPushMatrix();
+
+	glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, TexRenderer->ColorBuffer);
+	glDisable(GL_TEXTURE_2D);
+
+	// glutSolidCube(1.0);
+	glBegin( GL_QUADS );
+		glTexCoord2f( 0., 0. );
+		glVertex2f( -1., -1. );
+		glTexCoord2f( 1., 0. );
+		glVertex2f( 1., -1. );
+		glTexCoord2f( 1., 1. );
+		glVertex2f( 1., 1. );
+		glTexCoord2f( 0., 1. );
+		glVertex2f( -1., 1. );
+	glEnd( );
+	glPopMatrix();
+
 
 	glutSwapBuffers( );
 	glFlush( );
@@ -986,7 +1059,7 @@ InitGraphics( )
 	// init_render_target();
 
 	TexRenderer = new TextureRender(2048,2048);
-	TexRenderer->Init();
+	// TexRenderer->Init();
 
 }
 
