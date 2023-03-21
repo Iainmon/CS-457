@@ -1,15 +1,3 @@
-// Copyright Patricio Gonzalez Vivo, 2016 - http://patriciogonzalezvivo.com/
-// I am the sole copyright owner of this Work.
-//
-// You cannot host, display, distribute or share this Work in any form,
-// including physical and digital. You cannot use this Work in any
-// commercial or non-commercial product, website or project. You cannot
-// sell this Work and you cannot mint an NFTs of it.
-// I share this Work for educational purposes, and you can link to it,
-// through an URL, proper attribution and unmodified screenshot, as part
-// of your educational material. If these conditions are too restrictive
-// please contact me and we'll definitely work it out.
-
 #ifdef GL_ES
 precision highp float;
 #endif
@@ -33,7 +21,7 @@ varying vec3 v_eye;
 const vec3 coral_color = vec3(0.985,0.882,0.601);
 const vec3 coral_orange = vec3(0.985,0.811,0.288);
 const vec3 specular_color = vec3(1.0, 1.0, 1.0);
-
+const vec3 coral_yellow = vec3(0.985,0.882,0.601);
 const float shininess = 20.0;
 
 
@@ -56,6 +44,11 @@ float random (in float x) {
 
 float random (vec2 st) {
     return fract(sin(dot(st.xy, vec2(12.9898,78.233)))*43758.5453123);
+}
+
+float d_smoothstep(float edge0, float edge1, float x) {
+    float t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+    return 6. * (-(t * t) + t);
 }
 
 void main() {
@@ -148,13 +141,18 @@ void main() {
     float d1 = distance(color, vec3(1.,1.,1.));
     float d2 = distance(color, vec3(0.,0.,0.));
 
-    float d = smoothstep(-2., 0.3, color.g + color.b);
+    float field = color.g + color.b;
+
+    float d = smoothstep(-2., 0.3, field);
 
 
     // color = mix(coral_orange,coral_color, d);
 
 
-    vec3 coral_col_1 = coral_orange;
+    vec3 coral_col_1 = vec3(.21568,.41176,.37647) * 1.3;
+    float line = d_smoothstep(-10.,0.3, field);
+    coral_col_1 = mix(coral_col_1,coral_yellow,line);
+
 
     float dot_density = 800.;
     vec2 dot_st = (st + random(floor(st * dot_density))) * dot_density;
@@ -162,6 +160,7 @@ void main() {
     vec2 dot_off = vec2(random(dot_loc),random(-dot_loc));
     float dot_dist = length((dot_loc + vec2(.5)) - dot_st);
     float dots = 1. - smoothstep(0.1,0.13,dot_dist);
+    
     
     vec3 coral_col_2 = mix(coral_color,vec3(1.),dots * .5);
 
